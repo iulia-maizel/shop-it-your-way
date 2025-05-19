@@ -1,7 +1,7 @@
 
+import React from "react";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/utils/formatters";
-import { cn } from "@/lib/utils";
 
 interface BudgetProgressProps {
   spent: number;
@@ -9,34 +9,41 @@ interface BudgetProgressProps {
   className?: string;
 }
 
-export function BudgetProgress({ spent, budget, className }: BudgetProgressProps) {
+export const BudgetProgress: React.FC<BudgetProgressProps> = ({
+  spent,
+  budget,
+  className = "",
+}) => {
   const percentage = budget > 0 ? Math.min(Math.round((spent / budget) * 100), 100) : 0;
   const isOverBudget = spent > budget;
   
+  let progressColor = "bg-primary";
+  if (percentage > 85) {
+    progressColor = "bg-amber-500";
+  }
+  if (isOverBudget) {
+    progressColor = "bg-destructive";
+  }
+  
   return (
-    <div className={cn("space-y-2", className)}>
+    <div className={`space-y-2 ${className}`}>
       <div className="flex justify-between text-sm">
-        <span>Budget</span>
-        <span className={cn(
-          "font-medium",
-          isOverBudget ? "text-destructive" : "text-green-600"
-        )}>
-          {formatCurrency(spent)} / {formatCurrency(budget)}
+        <span>
+          Spent: <span className="font-medium">{formatCurrency(spent)}</span>
+        </span>
+        <span>
+          Budget: <span className="font-medium">{formatCurrency(budget)}</span>
         </span>
       </div>
+      
       <Progress 
         value={percentage} 
-        className={cn(
-          "h-2",
-          isOverBudget ? "bg-red-200" : "bg-gray-200"
-        )}
-        indicatorClassName={isOverBudget ? "bg-destructive" : "bg-primary"}
+        className={`h-2 ${isOverBudget ? 'bg-red-100' : 'bg-gray-100'}`}
       />
-      <div className="flex justify-end">
-        <span className="text-xs text-muted-foreground">
-          {percentage}% {isOverBudget ? "over budget" : "of budget used"}
-        </span>
+      
+      <div className="text-xs text-right text-muted-foreground">
+        {percentage}% of budget used
       </div>
     </div>
   );
-}
+};
