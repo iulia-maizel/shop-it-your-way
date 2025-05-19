@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { initialShoppingLists } from "@/data/mockData";
@@ -10,7 +9,7 @@ type ShoppingListContextType = {
   activeListId: string | null;
   setActiveListId: (id: string | null) => void;
   getActiveList: () => ShoppingList | undefined;
-  addShoppingList: (name: string, budget: number) => void;
+  addShoppingList: (name: string, budget: number) => string;
   updateShoppingList: (id: string, data: Partial<ShoppingList>) => void;
   deleteShoppingList: (id: string) => void;
   addItem: (listId: string, item: Omit<ShoppingItem, 'id' | 'checked'>) => void;
@@ -40,7 +39,7 @@ export function ShoppingListProvider({ children }: { children: ReactNode }) {
     toast({ description: "List updated successfully" });
   }, []);
 
-  const addShoppingList = useCallback((name: string, budget: number) => {
+  const addShoppingList = useCallback((name: string, budget: number): string => {
     const newList: ShoppingList = {
       id: uuidv4(),
       name,
